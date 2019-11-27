@@ -30,11 +30,11 @@ class HashStructureImplementation(BasicDatabase):
         """
 
         if self.search(k) != None: # The key already exists in the record, so update 
-            resInd = self.indices[int(k)]
-            self.records[resInd] = int(v)
+            resInd = self.indices[k]
+            self.records[resInd] = v
         else: # Append to records,
-            self.indices[int(k)] = self.indTracker 
-            self.records.append((int(k), int(v)))
+            self.indices[k] = self.indTracker 
+            self.records.append(v)
             self.indTracker += 1
     
     def search(self, k):
@@ -49,7 +49,7 @@ class HashStructureImplementation(BasicDatabase):
             None
         """
         try: 
-            resInd = self.indices[int(k)]
+            resInd = self.indices[k]
             res = self.records[resInd]
         except: 
             res = None
@@ -69,8 +69,8 @@ class HashStructureImplementation(BasicDatabase):
         """
 
         try:
-            resInd = self.indices[int(k)]
-            self.indices[int(k)] = "deleted"
+            resInd = self.indices[k]
+            self.indices[k] = "deleted"
             self.records[resInd] = "deleted"
             success = True
         except:
