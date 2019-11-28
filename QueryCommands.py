@@ -1,5 +1,6 @@
 from Arrable import Arrable
 from typing import List
+from collections import defaultdict
 
 class WherePredicates():
     
@@ -123,5 +124,21 @@ def project(fromTable: Arrable, *arg: str):
     newArrable = Arrable().init_from_arrable(columns, result)
     return newArrable
 
+def _groupby(fromTable: Arrable, groupOn: str):
+    """
+    Returns an arrable per column as an intermediate step. 
+    To be concatted.
+    """
+
+    res = defaultdict(list)
+    
+    for row in fromTable.get_rows():
+        if row[groupOn] in res:
+            res[groupOn].append(row)
+    
+    return [groupArr for groupArr in res.values()]
+    
+    
+    
 def join():
     pass
