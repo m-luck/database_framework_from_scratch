@@ -21,10 +21,17 @@ class TestQueryCommands(unittest.TestCase):
         # print(arr.get_col_names())
         # print(arr.get_rows()[0])
 
-    def test_select_all(self):
+    def test_select_single(self):
         arr = Arrable().import_from_file("sales1")
 
         res = q.select(arr, "itemid", where="itemid=14")
+        
+        print(res.get_rows())
+
+    def test_select_multiple(self):
+        arr = Arrable().import_from_file("sales1")
+
+        res = q.select(arr, "itemid", where="itemid=14,saleid=36")
         
         print(res.get_rows())
 
