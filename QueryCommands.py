@@ -108,5 +108,20 @@ def select(fromTable: Arrable, cols: str, where: str):
 
     return newArr
 
+def project(fromTable: Arrable, *arg: str):
+    """
+    filters columns specified in params (*arg) 
+    from the specified arrable (fromTable)
+    returns: Arrable
+    """
+    columns = list(arg)
+    result = []
+    for (j, row) in enumerate(arrable.get_rows()):
+        new_row = {col:row[col] for col in columns}
+        result.append(new_row)
+
+    newArrable = Arrable().init_from_arrable(columns, result)
+    return newArrable
+
 def join():
     pass
