@@ -23,17 +23,23 @@ class TestQueryCommands(unittest.TestCase):
 
     def test_select_single(self):
         arr = Arrable().import_from_file("sales1")
-
         res = q.select(arr, "itemid", where="itemid=14")
-        
         print(res.get_rows())
 
-    def test_select_multiple(self):
+    def test_select_multiple_comma(self):
         arr = Arrable().import_from_file("sales1")
-
         res = q.select(arr, "itemid", where="itemid=14,saleid=36")
-        
         print(res.get_rows())
+
+    def test_select_multiple_word(self):
+        arr = Arrable().import_from_file("sales1")
+        res = q.select(arr, "itemid", where="(itemid=14) and (saleid=36)")
+        print(res.get_rows())
+
+    def test_groupby(self):
+        arr = Arrable().import_from_file("sales1")
+        resList = q._groupby(arr, "customerid")
+        print([len(res) for res in resList])
 
 if __name__ == "__main__":
     unittest.main()

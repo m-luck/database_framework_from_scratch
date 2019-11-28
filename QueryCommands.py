@@ -126,19 +126,16 @@ def project(fromTable: Arrable, *arg: str):
 
 def _groupby(fromTable: Arrable, groupOn: str):
     """
-    Returns an arrable per column as an intermediate step. 
+    Returns an arrable per distinct column value as an intermediate step. 
     To be concatted.
     """
 
     res = defaultdict(list)
     
     for row in fromTable.get_rows():
-        if row[groupOn] in res:
-            res[groupOn].append(row)
+        res[row[groupOn]].append(row)
     
-    return [groupArr for groupArr in res.values()]
-    
-    
+    return list([groupArr for groupArr in res.values()])
     
 def join():
     pass
