@@ -136,6 +136,28 @@ def _groupby(fromTable: Arrable, groupOn: str):
         res[row[groupOn]].append(row)
     
     return list([groupArr for groupArr in res.values()])
+
+
+def _some(table: Arrable, col_name: str):
+    """
+    function name due to unclear instructions in hw specification. will include other namings to hedge our bets.
+    computes the sum of all values in a specified column
+    does not check for proper data type - will add later
+    returns int
+    """
+    result = 0
+    for i, row in enumerate(table.get_rows()):
+        result += int(row[col_name])
+        
+    return result
+
+def sum(table: Arrable, col_name: str):
+    """
+    sum calls some, returns some some sum
+    """
+    result = _some(table, col_name)
+    
+    return result
     
 def join():
     pass
