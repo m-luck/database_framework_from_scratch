@@ -61,5 +61,10 @@ class TestQueryCommands(unittest.TestCase):
         result = q.sumgroup(arr, "qty", "time")
         print(result.get_rows())
 
+    def test_avggroup(self):
+        arr = Arrable().import_from_file("sales1")
+        result = q.avggroup(arr, "qty", "time")
+        print(result.get_rows())
+
 if __name__ == "__main__":
     unittest.main()

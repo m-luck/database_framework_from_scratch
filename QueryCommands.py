@@ -178,9 +178,9 @@ def avg(table: Arrable, col_name: str):
 def sumgroup(table: Arrable, to_add: str, groupOn: str):
     """
     groups 'Arrable' by 'groupOn' and compute the sum of column 'to_add' for each group
-    returns arrable with two columns, 'groupOn' and new 'groupsum' columns
+    returns arrable with two columns, 'groupOn' and new 'sumgroup' columns
     """
-    group_col_name = "groupsum"
+    group_col_name = "sumgroup"
     final_columns = table.get_col_names().append(group_col_name)
     all_groups = _groupby(table, groupOn)
     list_of_sums = [0] * len(all_groups)
@@ -190,10 +190,40 @@ def sumgroup(table: Arrable, to_add: str, groupOn: str):
         for row in group:
             list_of_sums[index] += int(row[to_add])
     
-    # append groupsum as new column and then append row to new final arrable
+    # append sumgroup as new column and then append row to new final arrable
     arrable_rows = []
     for i, group in enumerate(all_groups):
         group[0].update({group_col_name:str(list_of_sums[i])})
+        arrable_rows.append(group[0])
+    
+    final_arrable = Arrable().init_from_arrable(final_columns, arrable_rows)
+    result = project(final_arrable, group_col_name, groupOn)
+    
+    return result
+
+def avggroup(table: Arrable, to_avg: str, groupOn: str):
+    """
+    groups 'Arrable' by 'groupOn' and compute the avg of column 'to_avg' for each group
+    returns arrable with two columns, 'groupOn' and new 'avggroup' columns
+    """
+    group_col_name = "sumgroup"
+    final_columns = table.get_col_names().append(group_col_name)
+    all_groups = _groupby(table, groupOn)
+    list_of_avgs = [0] * len(all_groups)
+    
+    # generate list of avgs, one for each group
+    row_count = 0
+    for i, group in enumerate(all_groups):
+        for row in group:
+            list_of_avgs[i] += int(row[to_avg])
+            row_count += 1
+        list_of_avgs[i] = list_of_avgs[i]/row_count
+        row_count = 0
+        
+    # append avggroup as new column and then append row to new final arrable
+    arrable_rows = []
+    for i, group in enumerate(all_groups):
+        group[0].update({group_col_name:str(list_of_avgs[i])})
         arrable_rows.append(group[0])
     
     final_arrable = Arrable().init_from_arrable(final_columns, arrable_rows)
