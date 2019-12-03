@@ -153,7 +153,7 @@ def _some(table: Arrable, col_name: str):
 
 def sum(table: Arrable, col_name: str):
     """
-    sum calls some, returns some some sum
+    sum calls some, returns some some sum (int)
     """
     result = _some(table, col_name)
     
@@ -172,6 +172,32 @@ def avg(table: Arrable, col_name: str):
         sum_elts += int(row[col_name])
         
     result = sum_elts/num_elts
+    
+    return result
+
+def sumgroup(table: Arrable, to_add: str, groupOn: str):
+    """
+    groups 'Arrable' by 'groupOn' and compute the sum of column 'to_add' for each group
+    returns arrable with two columns, 'groupOn' and new 'groupsum' columns
+    """
+    group_col_name = "groupsum"
+    final_columns = table.get_col_names().append(group_col_name)
+    all_groups = _groupby(table, groupOn)
+    list_of_sums = [0] * len(all_groups)
+    
+    # generate list of sums, one for each group
+    for index, group in enumerate(all_groups):
+        for row in group:
+            list_of_sums[index] += int(row[to_add])
+    
+    # append groupsum as new column and then append row to new final arrable
+    arrable_rows = []
+    for i, group in enumerate(all_groups):
+        group[0].update({group_col_name:str(list_of_sums[i])})
+        arrable_rows.append(group[0])
+    
+    final_arrable = Arrable().init_from_arrable(final_columns, arrable_rows)
+    result = project(final_arrable, group_col_name, groupOn)
     
     return result
     
