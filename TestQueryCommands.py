@@ -41,5 +41,25 @@ class TestQueryCommands(unittest.TestCase):
         resList = q._groupby(arr, "customerid")
         print([len(res) for res in resList])
 
+    def test_project(self):
+        arr = Arrable().import_from_file("sales1")
+        result = q.project(arr, "saleid", "itemid", "time")
+        print(result.get_rows())
+
+    def test_sum(self):
+        arr = Arrable().import_from_file("sales1")
+        result = q.sum(arr, "qty")
+        print(result)
+
+    def test_avg(self):
+        arr = Arrable().import_from_file("sales1")
+        result = q.avg(arr, "qty")
+        print(result)
+
+    def test_sumgroup(self):
+        arr = Arrable().import_from_file("sales1")
+        result = q.sumgroup(arr, "qty", "time")
+        print(result.get_rows())
+
 if __name__ == "__main__":
     unittest.main()
