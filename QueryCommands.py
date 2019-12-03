@@ -117,7 +117,7 @@ def project(fromTable: Arrable, *arg: str):
     """
     columns = list(arg)
     result = []
-    for (j, row) in enumerate(arrable.get_rows()):
+    for (j, row) in enumerate(fromTable.get_rows()):
         new_row = {col:row[col] for col in columns}
         result.append(new_row)
 
@@ -156,6 +156,22 @@ def sum(table: Arrable, col_name: str):
     sum calls some, returns some some sum
     """
     result = _some(table, col_name)
+    
+    return result
+
+def avg(table: Arrable, col_name: str):
+    """
+    computes average of all values in a specified column
+    does not check for proper data type - will add later
+    returns int
+    """
+    sum_elts = 0
+    num_elts = 0
+    for i, row in enumerate(table.get_rows()):
+        num_elts += 1
+        sum_elts += int(row[col_name])
+        
+    result = sum_elts/num_elts
     
     return result
     
