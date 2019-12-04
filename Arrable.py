@@ -84,6 +84,16 @@ class Arrable:
     def print(self):
         pass
     
+def get_slice(table: Arrable, start: int, end: int):
+    """
+    slices arrable object as specified by parameters start and end.
+    returns new arrable.
+    """
+    columns = table.get_col_names()
+    all_rows = table.get_rows()
+    sliced_list = all_rows[start:end]
+    sliced_arrable = Arrable().init_from_arrable(columns, sliced_list)
     
+    return sliced_arrable
         
     
