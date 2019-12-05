@@ -66,5 +66,24 @@ class TestQueryCommands(unittest.TestCase):
         result = q.avggroup(arr, "qty", "time")
         print(result.get_rows())
 
+    def test_count(self):
+        arr = Arrable().import_from_file("sales1")
+        result = q.count(arr, "qty")
+        print(result)
+
+    def test_countgroup(self):
+        arr = Arrable().import_from_file("sales1")
+        result = q.countgroup(arr, "qty", "time")
+        print(result.get_rows())
+
+    def test_concat(self):
+        arr1 = Arrable().import_from_file("sales1")
+        arr2 = Arrable().import_from_file("sales1")
+        result = q.concat(arr1, arr2)
+        print("arr1 num rows = <", len(arr1.get_rows()), ">\n")
+        print("arr2 num rows = <", len(arr2.get_rows()), ">\n")
+        print("concat arr num rows = <", len(result.get_rows()), ">\n")
+        print(result.get_rows())
+
 if __name__ == "__main__":
     unittest.main()

@@ -74,9 +74,9 @@ class WherePredicates():
         sub_res = []
         for pred in self.preds: 
             a, b = pred[0]
-            lamb = pred[1]
+            lamb = pred[1]  # lamb applies in/equality function on two values/columns
             if a in cols and not b.isnumeric() and "\'" not in b and "\"" not in b and b in cols: # It's two columns being compared intrarow
-                sub_match = lamb(row[a], row[b])
+                sub_match = lamb(row[a], row[b])  
             elif a in cols: # It's a column being compared to a value
                 sub_match = lamb(row[a], b)
             else: 
@@ -265,6 +265,34 @@ def countgroup(table: Arrable, to_count: str, groupOn: str):
     result = project(final_arrable, group_col_name, groupOn)
     
     return result
+
+def concat(table1: Arrable, table2: Arrable):
+    """
+    concats two arrables
+    returns arrable
+    """
+    if table1.get_col_names() != table2.get_col_names():
+        print("schemas don't match")
+        return
+    col_names = table1.get_col_names()
+    concated = table1.get_rows() + table2.get_rows()
+    result = Arrable().init_from_arrable(col_names, concated)
+    
+    return result
+
+def join(leftTable: Arrable, rightTable:Arrable, where:str):
+
+    result = []
+    columns = leftTable.get_col_names() + rightTable.get_col_names()[1:]
+    for i, row1 in enumerate(leftTable.get_rows()):
+        for j, row2 in enumerate(rightTable.get_rows()):
+            new_row = dict(row1)
+            new_row.update(row2)
+            result.append(new_row)
+            joined_tables = Arrable().init_from_arrable(columns, result)
+        
+    
+    return joined_tables
     
 def join():
     pass
