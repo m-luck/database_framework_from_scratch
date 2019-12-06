@@ -6,7 +6,7 @@ from typing import List
 class Arrable:
     
     def __init__(self, implem=BTreeImplementation):
-        self.db = BTreeImplementation()
+        self.db = implem()
         self.column_names = []
         self.pk = None
 

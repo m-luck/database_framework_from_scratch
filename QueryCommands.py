@@ -62,6 +62,10 @@ class WherePredicates():
                 a, b = p.split("<")
                 comp_pairs.append((a,b))
                 rel_ops.append(lambda x, y: x < y)
+            elif "!=" in p:
+                a, b = p.split("!=")
+                comp_pairs.append((a,b))
+                rel_ops.append(lambda x, y: x != y)
             elif "=" in p:
                 a, b = p.split("=")
                 comp_pairs.append((a, b))
@@ -89,9 +93,9 @@ class WherePredicates():
 def select(fromTable: Arrable, cols: str, where: str):
     """
     e.g. 
-        select(R, "(time > 50) or (qty < 30)")
-        select(R, "qty = 5") 
-        select(R, "itemid = 7")
+        select(R, R.get_cols_names(), "(time > 50) or (qty < 30)")
+        select(R, R.get_cols_names(), "qty = 5") 
+        select(R, R.get_cols_names(), "itemid = 7")
     """
 
     orig_cols = fromTable.get_col_names()
@@ -108,6 +112,40 @@ def select(fromTable: Arrable, cols: str, where: str):
     newArr = Arrable().init_from_arrable(cols, res)
 
     return newArr
+
+def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str):
+    """
+    The where string expects a pre-parsed string where "Table.Column" has already become "Table_Column".
+    e.g. 
+        join(R, S, "R_price = S_cost and R_cost = S_price")
+    """
+
+    renamed_cols_tableA, renamed_cols_tableB = get_converted_col_tables_for_join(tableA, A_name, tableB, B_name)
+
+    where = WherePredicates(where)
+
+
+    for row in renamed_cols_tablA.getRows():
+        
+    
+
+    res = []
+    newArr = Arrable().init_from_arrable(cols, res)
+
+    return newArr
+
+def get_converted_col_tables_for_join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str):
+
+    colsA = map(lambda col: ''.join([A_name, "_", col]), tableA.get_col_names()) # Turn all "col"s to "A_col"
+    rowsA = tableA.get_rows()
+    
+    colsB = map(lambda col: ''.join([B_name, "_", col]), tableB.get_col_names())
+    rowsB = tableB.get_rows()
+
+    newA = Arrable.init_from_arrable(colsA, rowsA, tableA.pk)
+    newB = Arrable.init_from_arrable(colsB, rowsB, tableB.pk)
+
+    return newA, newB
 
 def project(fromTable: Arrable, *arg: str):
     """
@@ -280,19 +318,19 @@ def concat(table1: Arrable, table2: Arrable):
     
     return result
 
-def join(leftTable: Arrable, rightTable:Arrable, where:str):
+# def join(leftTable: Arrable, rightTable:Arrable, where:str):
 
-    result = []
-    columns = leftTable.get_col_names() + rightTable.get_col_names()[1:]
-    for i, row1 in enumerate(leftTable.get_rows()):
-        for j, row2 in enumerate(rightTable.get_rows()):
-            new_row = dict(row1)
-            new_row.update(row2)
-            result.append(new_row)
-            joined_tables = Arrable().init_from_arrable(columns, result)
+#     result = []
+#     columns = leftTable.get_col_names() + rightTable.get_col_names()[1:]
+#     for i, row1 in enumerate(leftTable.get_rows()):
+#         for j, row2 in enumerate(rightTable.get_rows()):
+#             new_row = dict(row1)
+#             new_row.update(row2)
+#             result.append(new_row)
+#             joined_tables = Arrable().init_from_arrable(columns, result)
         
     
-    return joined_tables
+#     return joined_tables
     
-def join():
-    pass
+# def join():
+#     pass
