@@ -120,7 +120,7 @@ def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str)
         join(R, S, "R_price = S_cost and R_cost = S_price")
     """
 
-    renamed_cols_tableA, renamed_cols_tableB = get_converted_col_tables_for_join(tableA, A_name, tableB, B_name)
+    renamed_cols_tableA, renamed_cols_tableB = _get_converted_col_tables_for_join(tableA, A_name, tableB, B_name)
     joined_cols = [renamed_cols_tableA] + [renamed_cols_tableB]
 
     where = WherePredicates(where)
@@ -170,13 +170,13 @@ def project(fromTable: Arrable, *args: str):
     return newArrable
 
 def sortByCol(fromTable: Arrable, *args: str): # args can also be None for base case, returning the table itself (recursion)
-    if args == None:
+    if not list(args):
         return fromTable
     orderedPreference = list(args)
     colToOrderOn = orderedPreference.pop()
     sorted_table_rows = sorted(fromTable.get_rows(), key = lambda row: row[colToOrderOn])
     newArr = Arrable.init_from_arrable(fromTable.get_col_names(), sorted_table_rows)
-    return sortByCol(newArr, orderedPreference)
+    return sortByCol(newArr, *orderedPreference)
 
 def _groupby(fromTable: Arrable, groupOn: str):
     """
@@ -207,11 +207,11 @@ def _some(table: Arrable, col_name: str):
 
 def sum(table: Arrable, col_name: str):
     """
-    sum calls some, returns some some sum (int)
+    sum calls some, returns some some sum
     """
-    result = _some(table, col_name)
-    
-    return result
+    result = [_some(table, col_name)]
+    col_name = ["sum"]
+    return Arrable().init_from_arrable(col_name, result)
 
     
 def avg(table: Arrable, col_name: str):
@@ -226,9 +226,10 @@ def avg(table: Arrable, col_name: str):
         num_elts += 1
         sum_elts += int(row[col_name])
         
-    result = sum_elts/num_elts
+    result = [sum_elts/num_elts]
+    col_name = [avg]
     
-    return result
+    return Arrable().init_from_arrable(col_name, result)
 
 def moving_op(table: Arrable, col_name: str, sliding_window: int, op):
     res = []
@@ -243,16 +244,14 @@ def moving_sum(table: Arrable, col_name: str, sliding_window: int):
 def moving_avg(table: Arrable, col_name: str, sliding_window: int):
     moving_op(table, col_name, sliding_window, avg)
     
-def count(table: Arrable, col_name: str):
+def count(table: Arrable):
     """
     counts the number of rows containing a value in the specified column 'col_name'
     returns int
     """
-    result = 0
-    for row in table.get_rows():
-        if row[col_name] != '':  # in case a row doesn't contain an element in the specified column (that's why i didnt just use len())
-            result += 1
-    return result
+    result = [len(table.get_rows())]
+    col_name = ["count"]
+    return Arrable().init_from_arrable(col_name, result)
 
 def sumgroup(table: Arrable, to_add: str, groupOn: str):
     """
@@ -310,17 +309,15 @@ def avggroup(table: Arrable, to_avg: str, groupOn: str):
     
     return result
 
-def countgroup(table: Arrable, to_count: str, groupOn: str):
+def countgroup(table: Arrable, groupOn: str):
     """
     groups 'Arrable' by 'groupOn' and counts the number of rows containing a value for 'to_count' in each group
     returns arrable with two columns, 'groupOn' and new 'countgroup' columns
     """
     all_groups = _groupby(table, groupOn)
-    list_of_counts = [0] * len(all_groups)
-    for i, group in enumerate(all_groups):
-        for row in group:
-            if row[to_count] != '':
-                list_of_counts[i] += 1
+    list_of_counts = []
+    for group in all_groups:
+        list_of_counts.append(len(group))
      
     arrable_rows = []
     group_col_name = "countgroup"

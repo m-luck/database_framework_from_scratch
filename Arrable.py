@@ -21,7 +21,7 @@ class Arrable:
 
             for i, line in enumerate(f):
 
-                cols = line.split("|") 
+                cols = line.strip(' \t\n').split("|") 
 
                 if (i==0 and not header):
                     self.column_names = [ i for i in range(0,len(cols)) ]
@@ -101,7 +101,7 @@ class Arrable:
         # TODO: make columns match row cells (order row output according to col orders)
         file_name = self.tableName + ".out" 
         with open(self.tableName+".out", "w+") as toFile:
-            toFile.write(self.get_col_names):
+            toFile.write(self.get_col_names)
             for row in self.get_rows():
                 toFile.write(row.values())
     
