@@ -18,18 +18,19 @@ class WherePredicates():
 
         op = all
         res_list = []
+        preds = ''.join(c for c in preds if c not in ")( ")
 
         if "or" in preds: # all ORs, per specification
             op = any
-            res_list = preds.strip(")(").split("or") 
+            res_list = preds.split("or") 
 
         elif "and" in preds: # all ANDs 
             op = all
-            res_list = preds.strip(")(").split("and") 
+            res_list = preds.split("and") 
 
         elif "," in preds: # all ANDs 
             op = all
-            res_list = preds.strip(")(").split(",") 
+            res_list = preds.split(",") 
 
         else:
             op = all
@@ -106,7 +107,7 @@ def select(fromTable: Arrable, cols: str, where: str):
     for i, row in enumerate(fromTable.get_rows()):
         if where.isMatch(row, orig_cols):
             val = {entry:row[entry] for entry in cols}
-            val["-1*"] = i
+            val["  "] = i
             res.append(val)
 
     newArr = Arrable().init_from_arrable(cols, res)
@@ -224,10 +225,10 @@ def avg(table: Arrable, col_name: str):
     num_elts = 0
     for i, row in enumerate(table.get_rows()):
         num_elts += 1
-        sum_elts += int(row[col_name])
+        sum_elts += float(row[col_name])
         
     result = [sum_elts/num_elts]
-    col_name = [avg]
+    col_name = [result]
     
     return Arrable().init_from_arrable(col_name, result)
 

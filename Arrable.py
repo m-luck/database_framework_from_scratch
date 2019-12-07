@@ -21,16 +21,16 @@ class Arrable:
 
             for i, line in enumerate(f):
 
-                cols = line.strip(' \t\n').split("|") 
+                cols = ''.join(c for c in line if c not in ' \t\n').split("|") 
 
                 if (i==0 and not header):
                     self.column_names = [ i for i in range(0,len(cols)) ]
                     if not self.pk: 
-                        self.column_names = ["-1*"] + self.column_names 
+                        self.column_names = ["  "] + self.column_names 
                         
                 elif (i==0 and header):
                     if not self.pk: 
-                        self.column_names = ["-1*"] + cols 
+                        self.column_names = ["  "] + cols 
                     else:
                         self.column_names = cols
                 
@@ -77,7 +77,8 @@ class Arrable:
         Returns array of col names.
         """
         
-        return self.column_names
+        # Remove default index
+        return list(filter(lambda col: col != "  ", self.column_names))
     
     def result(self):
         pass
