@@ -1,6 +1,9 @@
+import ast
+
 from Arrable import Arrable
 from typing import List
 from collections import defaultdict
+
 
 class WherePredicates():
     
@@ -76,19 +79,50 @@ class WherePredicates():
         
         return list(zip(comp_pairs, rel_ops))
     
+    def _check_arith_op(self, x, op_str):
+        if op_str in x:
+            field, const = x.split(op_str)
+            return (True, field, const)
+        return (False, None, None)
+
     def isMatch(self, row, cols):
         sub_res = []
         for pred in self.preds: 
             a, b = pred[0]
             lamb = pred[1]  # lamb applies in/equality function on two values/columns
+
+            # Arithmetic
+                
             if a in cols and not b.isnumeric() and ("\'" not in b and "\"" not in b) and b in cols: # It's two columns being compared intrarow
-                sub_match = lamb(row[a], row[b])  
+                lamb1, lamb2 = row[a] if not row[a].isnumeric() else float(row[a]), row[b] if not row[b].isnumeric() else float(row[b])  
             elif a in cols: # It's a column being compared to a value
-                sub_match = lamb(row[a], b)
+                lamb1, lamb2 = row[a] if not row[a].isnumeric() else float(row[a]), b if not b.isnumeric() else float(b)
             elif b in cols: # It's a value being compared to a column
-                sub_match = lamb(a, row[b])
+                lamb1, lamb2 = a if not a.isnumeric() else float(a), row[b] if not row[b].isnumeric() else float(row[b]) 
             else: 
-                sub_match = lamb(a, b) # It's two values (rare, like True=False, maybe a SQL injection) 
+                lamb1, lamb2 = a if not a.isnumeric() else float(a), b if not b.isnumeric() else float(b) # It's two values (rare, like True=False, maybe a SQL injection) 
+            
+            # Account for arithmetic
+            # Will override current lambda inputs if arithmetic is found
+            for op in "+-*/":
+
+                has_arith = self._check_arith_op(a, op)
+                if has_arith[0]:
+                    field = has_arith[1]
+                    const_num = float(has_arith[2])
+                    lhs = float(row[field])
+                    expr = f"{lhs} {op} {const_num}"
+                    lamb1 = float(eval(expr))         
+
+                has_arith = self._check_arith_op(b, op)
+                if has_arith[0]:
+                    field = has_arith[1]
+                    const_num = float(has_arith[2])
+                    lhs = float(row[field])
+                    expr = f"{lhs} {op} {const_num}"
+                    lamb2 = float(eval(expr))         
+
+            sub_match = lamb(lamb1, lamb2)
             sub_res.append(sub_match)
 
             
@@ -185,14 +219,18 @@ def project(fromTable: Arrable, *args: str):
     newArrable = Arrable().init_from_arrable(columns, result)
     return newArrable
 
-def sortByCol(fromTable: Arrable, *args: str): # args can also be None for base case, returning the table itself (recursion)
+def sort(fromTable: Arrable, *args: str): # args can also be None for base case, returning the table itself (recursion)
     if not list(args):
         return fromTable
     orderedPreference = list(args)
-    colToOrderOn = orderedPreference.pop()
-    sorted_table_rows = sorted(fromTable.get_rows(), key = lambda row: row[colToOrderOn])
-    newArr = Arrable.init_from_arrable(fromTable.get_col_names(), sorted_table_rows)
-    return sortByCol(newArr, *orderedPreference)
+    colToOrderOn = orderedPreference[0]
+    del orderedPreference[0]
+    # print(colToOrderOn)
+    sorted_table_rows = sorted(fromTable.get_rows(), key = lambda row: int(row[colToOrderOn]) if row[colToOrderOn].isnumeric() else row[colToOrderOn])
+    # [print(row) for row in sorted_table_rows]
+    # print("\n")
+    newArr = Arrable().init_from_arrable(fromTable.get_col_names(), sorted_table_rows)
+    return sort(newArr, *orderedPreference)
 
 def _groupby(fromTable: Arrable, groupOn: str):
     """
@@ -247,6 +285,11 @@ def avg(table: Arrable, col_name: str):
  
 def moving_op(table: Arrable, col_name: str, sliding_window: int, op, op_name: str):
     newArr = Arrable().init_from_arrable([op_name], [])
+    stubs = []
+
+    for stub in range(0, sliding_window):
+        slice = table.get_slice(0, stub+1)
+        newArr = concat(newArr, op(slice, col_name))
     for i, row in enumerate(table.get_rows()):
         if i + sliding_window - 1 <= len(table.get_rows()) - 1: 
             slice = table.get_slice(i, i+sliding_window) # make this the slice
@@ -364,21 +407,6 @@ def concat(table1: Arrable, table2: Arrable):
 
 def output_to_file(table):
     table.output_to_file()
-    
 
-# def join(leftTable: Arrable, rightTable:Arrable, where:str):
-
-#     result = []
-#     columns = leftTable.get_col_names() + rightTable.get_col_names()[1:]
-#     for i, row1 in enumerate(leftTable.get_rows()):
-#         for j, row2 in enumerate(rightTable.get_rows()):
-#             new_row = dict(row1)
-#             new_row.update(row2)
-#             result.append(new_row)
-#             joined_tables = Arrable().init_from_arrable(columns, result)
-        
-    
-#     return joined_tables
-    
-# def join():
-#     pass
+def inputfromfile(file):
+    Arrable().import_from_file(file)

@@ -5,11 +5,11 @@ from typing import List
 
 class Arrable:
     
-    def __init__(self, implem=BTreeImplementation, tableName = "unnamed_table"):
+    def __init__(self, implem=BTreeImplementation, tableName = "unnamed_table", ind=None):
         self.db = implem()
         self.column_names = []
         self.tableName = tableName
-        self.pk = None
+        self.pk = ind
 
     def import_from_file(self, data_path, header=True, pk=None):
         
@@ -97,4 +97,9 @@ class Arrable:
             toFile.write(self.get_col_names)
             for row in self.get_rows():
                 toFile.write(row.values())
+
+    def to_btree(self, table, ind):
+        return Arrable(implem=BTreeImplementation, pk=ind).init_from_arrable(table.get_col_names(), table.get_rows())
     
+    def to_hash(self, table, ind):
+        return Arrable(implem=HashStructureImplementation, pk=ind).init_from_arrable(table.get_col_names(), table.get_rows())

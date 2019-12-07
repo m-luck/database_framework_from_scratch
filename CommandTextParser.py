@@ -1,3 +1,4 @@
+
 def remove_comments(line, sep):
     for s in sep:
         i = line.find(s)
@@ -19,4 +20,24 @@ def parse(input_path: str):
             
     return parsed
     
-            
+def interpret(command: str):
+    if command.startswith("select"):
+        table = command.split("(")[1].split(",")[0].strip() 
+        where = command.split(",")[1].strip("/n ")
+        return f"select(obj_dict['{table}'], ','.join(obj_dict['{table}'].get_col_names()), '{where[:-1]}')"
+    elif command.startswith("join"):
+        tableA = command.split("(")[1].split(",")[0].strip()
+        tableB = command.split("(")[1].split(",")[1].strip()
+        where = command.split(",")[2].strip("/n")
+        return f"join(obj_dict['{tableA}'], '{tableA}', obj_dict['{tableB}'], '{tableB}', '{where[:-1]}')"
+    elif command.startswith("Hash"):
+        table = command.split("(")[1].split(",")[0]
+        ind = command.split(")")[0].split(",")[1]
+        return (table, f"to_hash(obj_dict['{table}'], '{ind}')")
+    elif command.startswith("BTree"):
+        table = command.split("(")[1].split(",")[0]
+        ind = command.split(")")[0].split(",")[1]
+        return (table, f"to_btree(obj_dict['{table}'], '{ind}')")
+    elif command.startswith("inputfrom"):
+        file_path = command.split("(")[1].strip(")")        
+        return f"inputfromfile(\'{file_path}\')"

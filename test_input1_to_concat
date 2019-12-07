@@ -1,4 +1,4 @@
-saleid|itemid|customerid|storeid|time|qty|pricerange
-36|14|2|38|49|15|moderate
-784|90|182|97|46|31|moderate
-801|117|2|43|81|14|outrageous
+saleid|itemid|customerid|storeid|time|qty|pricerange|join
+36|14|2|38|49|15|moderate|r
+784|90|182|97|46|31|moderate|r
+801|117|2|43|81|14|outrageous|r
