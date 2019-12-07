@@ -51,7 +51,6 @@ class Arrable:
     def init_from_arrable(self, col_names: List, rows: List, pk=None):
 
         self.column_names = col_names
-        
         rowNum = 0
         for row in rows:
 
@@ -63,8 +62,6 @@ class Arrable:
             rowNum += 1
         
         return self
-
-
 
     def get_rows(self):
         """
@@ -91,8 +88,8 @@ class Arrable:
         slices arrable object as specified by parameters start and end.
         returns new arrable.
         """
-        columns = table.get_col_names()
-        all_rows = table.get_rows()
+        columns = self.get_col_names()
+        all_rows = self.get_rows()
         sliced_list = all_rows[start:end]
         sliced_arrable = Arrable().init_from_arrable(columns, sliced_list)
         

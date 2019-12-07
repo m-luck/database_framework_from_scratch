@@ -7,7 +7,7 @@ class WherePredicates():
     def __init__(self, predicate_strings):
 
         # AND / OR
-        self.pred_strings, self.logic_operator = self._process_logic_operators(predicate_strings.lower().strip()) 
+        self.pred_strings, self.logic_operator = self._process_logic_operators(predicate_strings.strip()) 
         self.preds = self._process_predicate_list(self.pred_strings)
 
     def _process_logic_operators(self, preds: str):
@@ -19,6 +19,7 @@ class WherePredicates():
         op = all
         res_list = []
         preds = ''.join(c for c in preds if c not in ")( ")
+        self.to_print = preds
 
         if "or" in preds: # all ORs, per specification
             op = any
@@ -77,19 +78,25 @@ class WherePredicates():
     
     def isMatch(self, row, cols):
         sub_res = []
+        print(row)
         for pred in self.preds: 
             a, b = pred[0]
             lamb = pred[1]  # lamb applies in/equality function on two values/columns
-            if a in cols and not b.isnumeric() and "\'" not in b and "\"" not in b and b in cols: # It's two columns being compared intrarow
+            if a in cols and not b.isnumeric() and ("\'" not in b and "\"" not in b) and b in cols: # It's two columns being compared intrarow
                 sub_match = lamb(row[a], row[b])  
             elif a in cols: # It's a column being compared to a value
                 sub_match = lamb(row[a], b)
+            elif b in cols: # It's a value being compared to a column
+                sub_match = lamb(a, row[b])
             else: 
                 sub_match = lamb(a, b) # It's two values (rare, like True=False, maybe a SQL injection) 
             sub_res.append(sub_match)
 
             
         return self.logic_operator(sub_res)
+
+    def print(self):
+        print(self.to_print)
 
 def select(fromTable: Arrable, cols: str, where: str):
     """
@@ -122,38 +129,47 @@ def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str)
     """
 
     renamed_cols_tableA, renamed_cols_tableB = _get_converted_col_tables_for_join(tableA, A_name, tableB, B_name)
-    joined_cols = [renamed_cols_tableA] + [renamed_cols_tableB]
+    joined_cols = renamed_cols_tableA.get_col_names() + renamed_cols_tableB.get_col_names() # Concat the lists
 
     where = WherePredicates(where)
 
     res = []
 
-    for Arow in renamed_cols_tableA.getRows():
+    for Arow in renamed_cols_tableA.get_rows():
         intermediate_cartesian = []
         for Brow in renamed_cols_tableB.get_rows():
-            joined_row = Arow.update(Brow)
+            joined_row = {**Arow, **Brow}
             intermediate_cartesian.append(joined_row)
         for cart_row in intermediate_cartesian:
             if where.isMatch(cart_row, joined_cols):
                 res.append(cart_row)
     
-
     newArr = Arrable().init_from_arrable(joined_cols, res)
 
     return newArr
 
 def _get_converted_col_tables_for_join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str):
-
-    colsA = map(lambda col: ''.join([A_name, "_", col]), tableA.get_col_names()) # Turn all "col"s to "A_col"
-    rowsA = tableA.get_rows()
     
-    colsB = map(lambda col: ''.join([B_name, "_", col]), tableB.get_col_names())
-    rowsB = tableB.get_rows()
-
-    newA = Arrable.init_from_arrable(colsA, rowsA, tableA.pk)
-    newB = Arrable.init_from_arrable(colsB, rowsB, tableB.pk)
+    renamedArows = _rename_fields_in_table(tableA, A_name)
+    renamedBrows = _rename_fields_in_table(tableB, B_name)
+   
+    colsA = list(map(lambda col: ''.join([A_name, "_", col]), tableA.get_col_names()))
+    colsB = list(map(lambda col: ''.join([B_name, "_", col]), tableB.get_col_names()))
+    
+    newA = Arrable().init_from_arrable(colsA, renamedArows, tableA.pk)
+    newB = Arrable().init_from_arrable(colsB, renamedBrows, tableB.pk)
 
     return newA, newB
+
+def _rename_fields_in_table(table: Arrable, table_name):
+    rows = []
+    for row in table.get_rows():
+        newRow = {}
+        for col in table.get_col_names():
+            new_col = ''.join([table_name, "_", col]) # Turn all "col"s to "A_col"
+            newRow[new_col] = row[col]
+        rows.append(newRow)
+    return rows
 
 def project(fromTable: Arrable, *args: str):
     """
@@ -204,7 +220,7 @@ def _some(table: Arrable, col_name: str):
     for i, row in enumerate(table.get_rows()):
         result += int(row[col_name])
         
-    return result
+    return float(result)
 
 def sum(table: Arrable, col_name: str):
     """
@@ -338,12 +354,11 @@ def concat(table1: Arrable, table2: Arrable):
     returns arrable
     """
     if table1.get_col_names() != table2.get_col_names():
-        print("schemas don't match") 
+        print("Table schemas don't match.") 
         return
     col_names = table1.get_col_names()
     concated = table1.get_rows() + table2.get_rows()
     result = Arrable().init_from_arrable(col_names, concated)
-    
     return result
 
 def output_to_file(table):
