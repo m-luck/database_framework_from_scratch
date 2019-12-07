@@ -121,20 +121,27 @@ def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str)
     """
 
     renamed_cols_tableA, renamed_cols_tableB = get_converted_col_tables_for_join(tableA, A_name, tableB, B_name)
+    joined_cols = [renamed_cols_tableA] + [renamed_cols_tableB]
 
     where = WherePredicates(where)
 
+    res = []
 
-    for row in renamed_cols_tablA.getRows():
-        
+    for Arow in renamed_cols_tableA.getRows():
+        intermediate_cartesian = []
+        for Brow in renamed_cols_tableB.get_rows():
+            joined_row = Arow.update(Brow)
+            intermediate_cartesian.append(joined_row)
+        for cart_row in intermediate_cartesian:
+            if where.isMatch(cart_row, joined_cols):
+                res.append(cart_row)
     
 
-    res = []
-    newArr = Arrable().init_from_arrable(cols, res)
+    newArr = Arrable().init_from_arrable(joined_cols, res)
 
     return newArr
 
-def get_converted_col_tables_for_join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str):
+def _get_converted_col_tables_for_join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str):
 
     colsA = map(lambda col: ''.join([A_name, "_", col]), tableA.get_col_names()) # Turn all "col"s to "A_col"
     rowsA = tableA.get_rows()
@@ -147,13 +154,13 @@ def get_converted_col_tables_for_join(tableA: Arrable, A_name: str, tableB: Arra
 
     return newA, newB
 
-def project(fromTable: Arrable, *arg: str):
+def project(fromTable: Arrable, *args: str):
     """
     filters columns specified in params (*arg) 
     from the specified arrable (fromTable)
     returns: Arrable
     """
-    columns = list(arg)
+    columns = list(args)
     result = []
     for (j, row) in enumerate(fromTable.get_rows()):
         new_row = {col:row[col] for col in columns}
@@ -161,6 +168,15 @@ def project(fromTable: Arrable, *arg: str):
 
     newArrable = Arrable().init_from_arrable(columns, result)
     return newArrable
+
+def sortByCol(fromTable: Arrable, *args: str): # args can also be None for base case, returning the table itself (recursion)
+    if args == None:
+        return fromTable
+    orderedPreference = list(args)
+    colToOrderOn = orderedPreference.pop()
+    sorted_table_rows = sorted(fromTable.get_rows(), key = lambda row: row[colToOrderOn])
+    newArr = Arrable.init_from_arrable(fromTable.get_col_names(), sorted_table_rows)
+    return sortByCol(newArr, orderedPreference)
 
 def _groupby(fromTable: Arrable, groupOn: str):
     """
@@ -197,6 +213,7 @@ def sum(table: Arrable, col_name: str):
     
     return result
 
+    
 def avg(table: Arrable, col_name: str):
     """
     computes average of all values in a specified column
@@ -213,6 +230,19 @@ def avg(table: Arrable, col_name: str):
     
     return result
 
+def moving_op(table: Arrable, col_name: str, sliding_window: int, op):
+    res = []
+    for i, row in enumerate(table.get_rows()):
+        if i + sliding_window - 1 <= len(table.get_rows()) - 1: 
+            slice = table.get_slice(i, i+sliding_window) # make this the slice
+            res.append(op(slice))
+
+def moving_sum(table: Arrable, col_name: str, sliding_window: int):
+    moving_op(table, col_name, sliding_window, sum)
+
+def moving_avg(table: Arrable, col_name: str, sliding_window: int):
+    moving_op(table, col_name, sliding_window, avg)
+    
 def count(table: Arrable, col_name: str):
     """
     counts the number of rows containing a value in the specified column 'col_name'
@@ -310,13 +340,17 @@ def concat(table1: Arrable, table2: Arrable):
     returns arrable
     """
     if table1.get_col_names() != table2.get_col_names():
-        print("schemas don't match")
+        print("schemas don't match") 
         return
     col_names = table1.get_col_names()
     concated = table1.get_rows() + table2.get_rows()
     result = Arrable().init_from_arrable(col_names, concated)
     
     return result
+
+def output_to_file(table):
+    table.output_to_file()
+    
 
 # def join(leftTable: Arrable, rightTable:Arrable, where:str):
 

@@ -5,9 +5,10 @@ from typing import List
 
 class Arrable:
     
-    def __init__(self, implem=BTreeImplementation):
+    def __init__(self, implem=BTreeImplementation, tableName = "unnamed_table"):
         self.db = implem()
         self.column_names = []
+        self.tableName = tableName
         self.pk = None
 
     def import_from_file(self, data_path, header=True, pk=None):
@@ -84,16 +85,23 @@ class Arrable:
     def print(self):
         pass
     
-def get_slice(table: Arrable, start: int, end: int):
-    """
-    slices arrable object as specified by parameters start and end.
-    returns new arrable.
-    """
-    columns = table.get_col_names()
-    all_rows = table.get_rows()
-    sliced_list = all_rows[start:end]
-    sliced_arrable = Arrable().init_from_arrable(columns, sliced_list)
-    
-    return sliced_arrable
+    def get_slice(self, start: int, end: int):
+        """
+        slices arrable object as specified by parameters start and end.
+        returns new arrable.
+        """
+        columns = table.get_col_names()
+        all_rows = table.get_rows()
+        sliced_list = all_rows[start:end]
+        sliced_arrable = Arrable().init_from_arrable(columns, sliced_list)
         
+        return sliced_arrable
+
+    def output_to_file(self):
+        # TODO: make columns match row cells (order row output according to col orders)
+        file_name = self.tableName + ".out" 
+        with open(self.tableName+".out", "w+") as toFile:
+            toFile.write(self.get_col_names):
+            for row in self.get_rows():
+                toFile.write(row.values())
     
