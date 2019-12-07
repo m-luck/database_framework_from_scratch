@@ -86,8 +86,31 @@ class TestQueryCommands(unittest.TestCase):
     def test_join(self):
         a = Arrable().import_from_file("test_input1")
         b = Arrable().import_from_file("test_input2")
-        res = q.join(a, "a", b, "b", "a_pricerange = b_P")
-        print(res.get_rows())
+        res = q.join(a, "a", b, "b", "a_join = b_j_oin")
+        self.assertEqual(res.get_rows(), [{'a_saleid': '36', 'a_itemid': '14', 'a_customerid': '2', 'a_storeid': '38', 'a_time': '49', 'a_qty': '15', 'a_pricerange': 'moderate', 'a_join': 'hey', 'b_saleid': '3506', 'b_I': '13517', 'b_C': '16566', 'b_S': '45', 'b_T': '73', 'b_Q': '19', 'b_P': 'expensive', 'b_j_oin': 'hey'}])
+        # for row in res.get_rows():
+        #     print(row["a_join"], row["b_j_oin"])
+
+    # def test_join_large(self): # Works
+    #     a = Arrable().import_from_file("sales1")
+    #     b = Arrable().import_from_file("sales2")
+    #     res = q.join(a, "a", b, "b", "a_pricerange = b_P")
+    #     print(res.get_rows())
+
+    def test_mov_sum(self):
+        arr = Arrable().import_from_file("sales1")
+        res = q.moving_sum(arr, "qty", 2)
+        rows = res.get_rows()
+        self.assertEqual(rows[0], 46)
+        self.assertEqual(rows[-1], 24)
+        
+
+    def test_mov_avg(self):
+        arr = Arrable().import_from_file("sales1")
+        res = q.moving_avg(arr, "qty", 2)
+        rows = res.get_rows()
+        self.assertEqual(rows[0], 23)
+        self.assertEqual(rows[-1], 12)
         
 
 if __name__ == "__main__":

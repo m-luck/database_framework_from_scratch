@@ -78,7 +78,6 @@ class WherePredicates():
     
     def isMatch(self, row, cols):
         sub_res = []
-        print(row)
         for pred in self.preds: 
             a, b = pred[0]
             lamb = pred[1]  # lamb applies in/equality function on two values/columns
@@ -227,8 +226,7 @@ def sum(table: Arrable, col_name: str):
     sum calls some, returns some some sum
     """
     result = [_some(table, col_name)]
-    col_name = ["sum"]
-    return Arrable().init_from_arrable(col_name, result)
+    return Arrable().init_from_arrable(["sum"], result)
 
     
 def avg(table: Arrable, col_name: str):
@@ -244,22 +242,25 @@ def avg(table: Arrable, col_name: str):
         sum_elts += float(row[col_name])
         
     result = [sum_elts/num_elts]
-    col_name = [result]
     
-    return Arrable().init_from_arrable(col_name, result)
-
-def moving_op(table: Arrable, col_name: str, sliding_window: int, op):
-    res = []
+    return Arrable().init_from_arrable(["avg"], result)
+ 
+def moving_op(table: Arrable, col_name: str, sliding_window: int, op, op_name: str):
+    newArr = Arrable().init_from_arrable([op_name], [])
     for i, row in enumerate(table.get_rows()):
         if i + sliding_window - 1 <= len(table.get_rows()) - 1: 
             slice = table.get_slice(i, i+sliding_window) # make this the slice
-            res.append(op(slice))
+            # print(newArr.get_col_names())
+            # print(op(slice, col_name).get_rows())
+            newArr = concat(newArr, op(slice, col_name))
+            
+    return newArr
 
 def moving_sum(table: Arrable, col_name: str, sliding_window: int):
-    moving_op(table, col_name, sliding_window, sum)
+    return moving_op(table, col_name, sliding_window, sum, "sum") 
 
 def moving_avg(table: Arrable, col_name: str, sliding_window: int):
-    moving_op(table, col_name, sliding_window, avg)
+    return moving_op(table, col_name, sliding_window, avg, "avg")
     
 def count(table: Arrable):
     """

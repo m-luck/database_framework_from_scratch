@@ -53,14 +53,10 @@ class Arrable:
         self.column_names = col_names
         rowNum = 0
         for row in rows:
-
             key = row[pk] if pk else rowNum # The ID column, implicitly indexed with primary key, else implicit ID if not provided.
-
             val = row
-
             self.db.insert(key, val)
             rowNum += 1
-        
         return self
 
     def get_rows(self):
@@ -73,7 +69,6 @@ class Arrable:
         """
         Returns array of col names.
         """
-        
         # Remove default index
         return list(filter(lambda col: col != "  ", self.column_names))
     
