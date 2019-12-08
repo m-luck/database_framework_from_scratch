@@ -70,15 +70,15 @@ class TestQueryCommands(unittest.TestCase):
         result = q.avggroup(arr, "qty", "time")
         self.assertEqual(result.get_rows(), [{'avggroup': '15.0', 'time': '49'}, {'avggroup': '31.0', 'time': '46'}, {'avggroup': '14.0', 'time': '81'}, {'avggroup': '43.0', 'time': '67'}, {'avggroup': '1.0', 'time': '35'}])
 
-    # def test_count(self):
-    #     arr = Arrable().import_from_file("sales1")
-    #     result = q.count(arr, "qty")
-    #     print(result)
+    def test_count(self):
+        arr = Arrable().import_from_file("sales1")
+        result = q.count(arr)
+        print(result)
 
-    # def test_countgroup(self):
-    #     arr = Arrable().import_from_file("sales1")
-    #     result = q.countgroup(arr, "qty", "time")
-    #     print(result.get_rows())
+    def test_countgroup(self):
+        arr = Arrable().import_from_file("sales1")
+        result = q.countgroup(arr, "time")
+        print(result.get_rows())
 
     def test_concat(self):
         arr1 = Arrable().import_from_file("test_input1")
