@@ -20,9 +20,8 @@ def run(commands, obj_dict):
             # garbage_collect_through_lookahead(obj_dict, commands)
         else: 
             singular = pair[0]
-            if singular.startswith("Hash") or singular.startswith("Btree"):
-                variable, value = interpret(singular)
-                time_command(f"obj_dict['{variable}'] = {value}", obj_dict)
+            variable, value = interpret(singular)
+            time_command(f"obj_dict['{variable}'] = {value}", obj_dict)
                 
             
 def time_command(interpreted_command: str, obj_dict, trials=1, print_out=True):
