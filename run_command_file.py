@@ -1,5 +1,5 @@
 import sys
-import timeit
+import time
 
 from Arrable import Arrable
 import QueryCommands as q
@@ -25,13 +25,17 @@ def run(commands, obj_dict):
             to_run = f"obj_dict['{variable}'] = {value}"
             time_command(to_run)
             
-def time_command(interpreted_command: str, trials=1, print_out=True):
+def time_command(interpreted_command: str, trials=1, print_out=True, with_command=True):
+    start = time.time()
     execcode(interpreted_command)
-    # if print_out: print(duration)
+    end = time.time()
+    if print_out:
+        if with_command: print("{0:.4f}: {1}".format(end-start, interpreted_command))
+        else: print("{0:.4f}".format(end-start))
 
 def execcode(code_str: str):
     global obj_dict
-    print(code_str)
+    # print(code_str)
     glob_dict = {"obj_dict": obj_dict, "q": q, "Arrable": Arrable}
     exec(code_str, glob_dict)
     # print(glob_dict)

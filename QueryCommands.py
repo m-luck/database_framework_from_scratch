@@ -168,6 +168,7 @@ def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str)
     renamed_cols_tableA, renamed_cols_tableB = _get_converted_col_tables_for_join(tableA, A_name, tableB, B_name)
     joined_cols = renamed_cols_tableA.get_col_names() + renamed_cols_tableB.get_col_names() # Concat the lists
 
+    where.replace(".","_")
     where = WherePredicates(where)
 
     res = []
@@ -182,11 +183,14 @@ def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str)
         # print(prog/done)
         progress_bar.update((prog/done)*100)
         for Brow in renamed_cols_tableB.get_rows():
+            print(Arow)
+            print(Brow)
             joined_row = {**Arow, **Brow}
             intermediate_cartesian.append(joined_row)
             prog += 1
         for cart_row in intermediate_cartesian:
             if where.isMatch(cart_row, joined_cols):
+                print('match')
                 res.append(cart_row)
     
     progress_bar.finish()
