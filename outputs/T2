@@ -1,0 +1,7 @@
+R1_saleid|R1_itemid|R1_customerid|R1_storeid|R1_time|R1_qty|R1_pricerange|S_saleid|S_itemid|S_customerid|S_storeid|S_time|S_qty|S_pricerange
+905|79|119|81|67|44|outrageous|227|68|2|66|67|42|supercheap
+905|79|119|81|67|44|outrageous|492|100|2|7|67|39|outrageous
+227|68|2|66|67|42|supercheap|492|100|2|7|67|39|outrageous
+905|79|119|81|67|44|outrageous|228|100|16|11|67|27|outrageous
+227|68|2|66|67|42|supercheap|228|100|16|11|67|27|outrageous
+492|100|2|7|67|39|outrageous|228|100|16|11|67|27|outrageous

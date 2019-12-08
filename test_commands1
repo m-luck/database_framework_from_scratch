@@ -16,7 +16,7 @@ S := inputfromfile(input_slice) // suppose column headers are
 // saleid|I|C|S|T|Q|P
 T := join(R, S, R.customerid = S.customerid) // select * from R, S
 // where R.customerid = S.C
-T1 := join(R1, S, (R1.qty > S.qty) and (R1.saleid = S.saleid)) // select * from R1, S where
+T1 := join(R1, S, (R1.qty > S.qty) and (R1.time = S.time)) // select * from R1, S where
 T2 := sort(T1, S_customerid) // sort T1 by S_C
 T2prime := sort(T1, R1_time, S_customerid) // sort T1 by R1_time, S_C (in that order)
 T3 := movavg(T2prime, R1_qty, 3) // perform the three item moving average of T2prime
@@ -40,8 +40,10 @@ outputtofile(T, T) // This should output the table T
 outputtofile(R1, R1)
 outputtofile(R2, R2)
 outputtofile(R3, R3)
+outputtofile(R4, R4)
 outputtofile(R5, R5)
 outputtofile(T1, T1)
 outputtofile(T2, T2)
+outputtofile(T2prime, T2prime)
 outputtofile(T3, T3)
 outputtofile(T4, T4)
