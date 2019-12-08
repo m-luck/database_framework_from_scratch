@@ -183,8 +183,8 @@ def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str)
         # print(prog/done)
         progress_bar.update((prog/done)*100)
         for Brow in renamed_cols_tableB.get_rows():
-            print(Arow)
-            print(Brow)
+            # print(Arow)
+            # print(Brow)
             joined_row = {**Arow, **Brow}
             intermediate_cartesian.append(joined_row)
             prog += 1
