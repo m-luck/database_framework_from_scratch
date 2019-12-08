@@ -422,3 +422,9 @@ def output_to_file(table):
 
 def inputfromfile(file):
     Arrable().import_from_file(file)
+
+def to_btree(self, table, ind):
+    return Arrable(implem=BTreeImplementation, ind=ind).init_from_arrable(table.get_col_names(), table.get_rows())
+
+def to_hash(self, table, ind):
+    return Arrable(implem=HashStructureImplementation, ind=ind).init_from_arrable(table.get_col_names(), table.get_rows())
