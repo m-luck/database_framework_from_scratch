@@ -41,3 +41,4 @@ def interpret(command: str):
     elif command.startswith("inputfrom"):
         file_path = command.split("(")[1].strip(")")        
         return f"inputfromfile(\'{file_path}\')"
+    

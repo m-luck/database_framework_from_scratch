@@ -22,7 +22,7 @@ def run(commands, obj_dict):
             singular = pair[0]
             if singular.startswith("Hash") or singular.startswith("Btree"):
                 variable, value = interpret(singular)
-                time_command(f"obj_dict[{variable}] = {value}", obj_dict)
+                time_command(f"obj_dict['{variable}'] = {value}", obj_dict)
                 
             
 def time_command(interpreted_command: str, obj_dict, trials=1, print_out=True):
