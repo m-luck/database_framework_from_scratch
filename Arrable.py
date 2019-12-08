@@ -92,7 +92,7 @@ class Arrable:
 
     def output_to_file(self, table_name):
         cols = self.get_col_names()
-        with open("outputs/table_name", "w") as toFile:
+        with open(f"outputs/{table_name}", "w") as toFile:
             toFile.write('|'.join(self.get_col_names()))
             for row in self.get_rows():
                 col_vals = []
