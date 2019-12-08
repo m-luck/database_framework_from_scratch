@@ -46,7 +46,7 @@ def interpret(command: str):
         nargs = command.split(",")[1:]
         nargs[-1] = nargs[-1].strip(")")
         nargs = [f"'{arg.strip()}'" for arg in nargs]
-        return "project(obj_dict['{}'], '{}'".format(table, *nargs)
+        return "project(obj_dict['{}'], '{}')".format(table, *nargs)
     elif command.startswith('sum'):
         table = command.split("(")[1].split(",")[0].strip()
         param = command.split(",")[1].split(")")[0].strip()
@@ -86,7 +86,7 @@ def interpret(command: str):
         table = command.split("(")[1].split(",").strip()
         nargs = command.split(")")[0].split(",")[1:]
         nargs = [f"'{arg.strip()}'" for arg in nargs]
-        return "sort(obj_dict['{table}'], '{}'".format(table=table, *nargs)
+        return "sort(obj_dict['{table}'], '{}')".format(table=table, *nargs)
     elif command.startswith("movavg"):
         args = command.split("(")[1].split(")")[0]
         args = args.split(",")
