@@ -5,6 +5,9 @@ from Arrable import Arrable
 from typing import List
 from collections import defaultdict
 
+from BTreeImplementation import BTreeImplementation
+from HashStructureImplementation import HashStructureImplementation
+
 
 class WherePredicates():
     
