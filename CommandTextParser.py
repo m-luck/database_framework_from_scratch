@@ -79,7 +79,7 @@ def interpret(command: str):
     elif command.startswith("outputtofile"):
         # outputtofile(T, T)
         table = command.split("(")[1].split(",")[0]
-        file_name = command.split(")"[0].split(",")[1] 
+        file_name = command.split(")")[0].split(",")[1] 
         return f"obj_dict['{table}'].output_to_file('{file_name}')"
     elif command.startswith("sort"):
         # sort(T1, S_C, col2, col3)
@@ -93,11 +93,11 @@ def interpret(command: str):
         table = args[0].strip()
         col = args[1].strip()
         slider = args[2].strip()
-        return f"movavg('{table}', '{}')"
+        return f"movavg('{table}', '{col}', {slider})"
     elif command.startswith("movsum"):
         args = command.split("(")[1].split(")")[0]
         args = args.split(",")
         table = args[0].strip()
         col = args[1].strip()
         slider = args[2].strip()
-        return f"movsum('{table}', '{}')"
+        return f"movsum('{table}', '{col}', {slider})"
