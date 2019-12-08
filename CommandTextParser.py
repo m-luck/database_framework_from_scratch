@@ -101,3 +101,5 @@ def interpret(command: str):
         col = args[1].strip()
         slider = args[2].strip()
         return f"movsum('{table}', '{col}', {slider})"
+    else:
+        return "parse problem"
