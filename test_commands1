@@ -1,4 +1,4 @@
-R := inputfromfile(sales1) // import vertical bar delimited foo, first line
+R := inputfromfile(input_slice) // import vertical bar delimited foo, first line
 // has column headers.
 // Suppose they are saleid|itemid|customerid|storeid|time|qty|pricerange
 // In general there can be more or fewer columns than this.
