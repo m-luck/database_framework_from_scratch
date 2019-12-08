@@ -45,8 +45,10 @@ def interpret(command: str):
         table = command.split("(")[1].split(",")[0].strip()
         nargs = command.split(",")[1:]
         nargs[-1] = nargs[-1].strip(")")
-        nargs = [f"'{arg.strip()}'" for arg in nargs]
-        return "q.project(obj_dict['{}'], {})".format(table, *nargs)
+        print("NARGS = ",nargs)
+        nargs = [f'{arg.strip()}' for arg in nargs]
+        print("NARGS = ",nargs)
+        return "q.project(obj_dict['{}'], {})".format(table, nargs)
     elif command.startswith('sum'):
         table = command.split("(")[1].split(",")[0].strip()
         param = command.split(",")[1].split(")")[0].strip()

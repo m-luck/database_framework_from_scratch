@@ -97,6 +97,6 @@ class Arrable:
             for row in self.get_rows():
                 col_vals = []
                 for col in cols: 
-                    col_vals.append(row[col])
+                    col_vals.append(str(row[col]))
                 toFile.write('\n' + '|'.join(col_vals))
 

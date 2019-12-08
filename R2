@@ -1,0 +1,10 @@
+saleid|qty|pricerange
+36|15|moderate
+801|14|outrageous
+905|44|outrageous
+227|42|supercheap
+951|1|outrageous
+492|39|outrageous
+228|27|outrageous
+541|14|expensive
+350|17|cheap

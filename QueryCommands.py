@@ -183,14 +183,11 @@ def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str)
         # print(prog/done)
         progress_bar.update((prog/done)*100)
         for Brow in renamed_cols_tableB.get_rows():
-            # print(Arow)
-            # print(Brow)
             joined_row = {**Arow, **Brow}
             intermediate_cartesian.append(joined_row)
             prog += 1
         for cart_row in intermediate_cartesian:
             if where.isMatch(cart_row, joined_cols):
-                print('match')
                 res.append(cart_row)
     
     progress_bar.finish()
@@ -221,13 +218,14 @@ def _rename_fields_in_table(table: Arrable, table_name):
         rows.append(newRow)
     return rows
 
-def project(fromTable: Arrable, *args: str):
+def project(fromTable: Arrable, columns: list):
     """
     filters columns specified in params (*arg) 
     from the specified arrable (fromTable)
     returns: Arrable
     """
-    columns = list(args)
+    # columns = list(args)
+    print("COLUMNS = ", columns)
     result = []
     for (j, row) in enumerate(fromTable.get_rows()):
         new_row = {col:row[col] for col in columns}
@@ -282,7 +280,7 @@ def sum(table: Arrable, col_name: str):
     """
     sum calls some, returns some some sum
     """
-    result = [_some(table, col_name)]
+    result = [{"sum" : _some(table, col_name)}]
     return Arrable().init_from_arrable(["sum"], result)
 
     
@@ -300,7 +298,7 @@ def avg(table: Arrable, col_name: str):
 
     if num_elts==0:
         num_elts = 1  
-    result = [sum_elts/num_elts]
+    result = [{"avg" : sum_elts/num_elts}]
     
     return Arrable().init_from_arrable(["avg"], result)
  
@@ -331,7 +329,7 @@ def count(table: Arrable):
     counts the number of rows containing a value in the specified column 'col_name'
     returns int
     """
-    result = [len(table.get_rows())]
+    result = [{"count" : len(table.get_rows())}]
     col_name = ["count"]
     return Arrable().init_from_arrable(col_name, result)
 
