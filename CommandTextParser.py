@@ -40,7 +40,7 @@ def interpret(command: str):
         return (table, f"q.to_btree(obj_dict['{table}'], '{ind}')")
     elif command.startswith("inputfrom"):
         file_path = command.split("(")[1].strip(")")        
-        return f"q.inputfromfile(\'{file_path}\')"
+        return f"Arrable().import_from_file(\'{file_path}\')"
     elif command.startswith("project"):
         table = command.split("(")[1].split(",")[0].strip()
         nargs = command.split(",")[1:]

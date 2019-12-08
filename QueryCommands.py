@@ -1,4 +1,5 @@
 import ast
+import progressbar
 
 from Arrable import Arrable
 from typing import List
@@ -168,15 +169,24 @@ def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str)
 
     res = []
 
+    done = len(tableA.get_rows()) * len(tableB.get_rows())
+    # print(done)
+    
+    prog = 0
+    progress_bar = progressbar.ProgressBar(max_value=100).start()
     for Arow in renamed_cols_tableA.get_rows():
         intermediate_cartesian = []
+        # print(prog/done)
+        progress_bar.update((prog/done))
         for Brow in renamed_cols_tableB.get_rows():
             joined_row = {**Arow, **Brow}
             intermediate_cartesian.append(joined_row)
+            prog += 1
         for cart_row in intermediate_cartesian:
             if where.isMatch(cart_row, joined_cols):
                 res.append(cart_row)
     
+    progress_bar.finish()
     newArr = Arrable().init_from_arrable(joined_cols, res)
 
     return newArr

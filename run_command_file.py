@@ -1,7 +1,7 @@
 import sys
 import timeit
 
-from Arrable import Arrable as arbl
+from Arrable import Arrable
 import QueryCommands as q
 from CommandTextParser import parse, interpret
 
@@ -16,19 +16,25 @@ def run(commands, obj_dict):
         if len(pair) == 2:
             variable, value = pair
             value = interpret(value)
-            time_command(f"obj_dict['{variable}'] = {value}", obj_dict)
+            to_run = f"obj_dict['{variable}'] = {value}"
+            time_command(to_run)
             # garbage_collect_through_lookahead(obj_dict, commands)
         else: 
             singular = pair[0]
             variable, value = interpret(singular)
-            time_command(f"obj_dict['{variable}'] = {value}", obj_dict)
-                
+            to_run = f"obj_dict['{variable}'] = {value}"
+            time_command(to_run)
             
-def time_command(interpreted_command: str, obj_dict, trials=1, print_out=True):
-    print(interpreted_command)
-    exec_string = f"{interpreted_command}" # Literally execute the strings
-    # duration = timeit.timeit(stmt="exec(exec_string)", globals={"exec_string": exec_string}, number=trials)
+def time_command(interpreted_command: str, trials=1, print_out=True):
+    execcode(interpreted_command)
     # if print_out: print(duration)
+
+def execcode(code_str: str):
+    global obj_dict
+    print(code_str)
+    glob_dict = {"obj_dict": obj_dict, "q": q, "Arrable": Arrable}
+    exec(code_str, glob_dict)
+    # print(glob_dict)
 
 # def garbage_collect_through_lookahead(obj_dict, future_commands):
 #     """
