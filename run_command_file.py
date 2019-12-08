@@ -16,7 +16,7 @@ def run(commands, obj_dict):
         if len(pair) == 2:
             variable, value = pair
             value = interpret(value)
-            time_command(f"obj_dict[{variable}] = {value}", obj_dict)
+            time_command(f"obj_dict['{variable}'] = {value}", obj_dict)
             # garbage_collect_through_lookahead(obj_dict, commands)
         else: 
             singular = pair[0]
