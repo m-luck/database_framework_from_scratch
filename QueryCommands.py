@@ -260,8 +260,7 @@ def _groupby(fromTable: Arrable, groupOn: str):
     for row in fromTable.get_rows():
         res[row[groupOn]].append(row)
     
-    return list([groupArr for groupArr in res.values()])
-
+    return list([Arrable().init_from_arrable(fromTable.get_col_names(), groupArr) for groupArr in res.values()])
 
 def _some(table: Arrable, col_name: str):
     """
