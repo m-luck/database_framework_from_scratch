@@ -7,5 +7,5 @@ elif command.startswith("sort"):
     # sort(T1, S_C, col2, col3)
     table = command.split("(")[1].split(",").strip()
     nargs = command.split(",")[1:].strip(")")
-    nargs = [f'{arg.strip()}' for arg in nargs]
+    nargs = [f"'{arg.strip()}'" for arg in nargs]
     return f"sort(obj_dict['{table}'], {*nargs})"
