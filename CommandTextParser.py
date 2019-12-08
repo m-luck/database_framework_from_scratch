@@ -87,19 +87,19 @@ def interpret(command: str):
         nargs = command.split(")")[0].split(",")[1:]
         nargs = [f"'{arg.strip()}'" for arg in nargs]
         return "q.sort(obj_dict['{table}'], {})".format(table=table, *nargs)
-    elif command.startswith("moving_avg"):
+    elif command.startswith("movavg"):
         args = command.split("(")[1].split(")")[0]
         args = args.split(",")
         table = args[0].strip()
         col = args[1].strip()
         slider = args[2].strip()
-        return f"q.moving_avg('{table}', '{col}', {slider})"
-    elif command.startswith("moving_sum"):
+        return f"q.movavg(obj_dict['{table}'], '{col}', {slider})"
+    elif command.startswith("movsum"):
         args = command.split("(")[1].split(")")[0]
         args = args.split(",")
         table = args[0].strip()
         col = args[1].strip()
         slider = args[2].strip()
-        return f"q.moving_sum('{table}', '{col}', {slider})"
+        return f"q.movsum(obj_dict['{table}'], '{col}', {slider})"
     # else:
     #     return "parse problem"

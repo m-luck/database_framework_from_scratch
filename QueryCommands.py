@@ -293,7 +293,9 @@ def avg(table: Arrable, col_name: str):
     for i, row in enumerate(table.get_rows()):
         num_elts += 1
         sum_elts += float(row[col_name])
-        
+
+    if num_elts==0:
+        num_elts = 1  
     result = [sum_elts/num_elts]
     
     return Arrable().init_from_arrable(["avg"], result)
@@ -314,10 +316,10 @@ def moving_op(table: Arrable, col_name: str, sliding_window: int, op, op_name: s
             
     return newArr
 
-def moving_sum(table: Arrable, col_name: str, sliding_window: int):
+def movsum(table: Arrable, col_name: str, sliding_window: int):
     return moving_op(table, col_name, sliding_window, sum, "sum") 
 
-def moving_avg(table: Arrable, col_name: str, sliding_window: int):
+def movavg(table: Arrable, col_name: str, sliding_window: int):
     return moving_op(table, col_name, sliding_window, avg, "avg")
     
 def count(table: Arrable):

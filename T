@@ -1,0 +1,1 @@
+R_saleid|R_itemid|R_customerid|R_storeid|R_time|R_qty|R_pricerange|S_saleid|S_itemid|S_customerid|S_storeid|S_time|S_qty|S_pricerange
