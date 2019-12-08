@@ -80,7 +80,7 @@ def interpret(command: str):
         # outputtofile(T, T)
         table = command.split("(")[1].split(",")[0]
         file_name = command.split(")")[0].split(",")[1] 
-        return f"obj_dict['{table}'].output_to_file('{file_name}')"
+        return ('output_dummy', f"obj_dict['{table}'].output_to_file('{file_name}')")
     elif command.startswith("sort"):
         # sort(T1, S_C, col2, col3)
         table = command.split("(")[1].split(",")[0].strip()
@@ -101,5 +101,5 @@ def interpret(command: str):
         col = args[1].strip()
         slider = args[2].strip()
         return f"movsum('{table}', '{col}', {slider})"
-    else:
-        return "parse problem"
+    # else:
+    #     return "parse problem"
