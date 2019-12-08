@@ -27,7 +27,7 @@ def run(commands, obj_dict):
 def time_command(interpreted_command: str, obj_dict, trials=1, print_out=True):
     print(interpreted_command)
     exec_string = f"\"{interpreted_command}\", globals(), {obj_dict}" # Literally execute the strings
-    duration = timeit.timeit(lambda: exec(exec_string))
+    duration = timeit.timeit(lambda: exec(exec_string), number=trials)
     if print_out: print(duration)
 
 # def garbage_collect_through_lookahead(obj_dict, future_commands):
