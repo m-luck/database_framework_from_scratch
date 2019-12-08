@@ -220,11 +220,13 @@ def project(fromTable: Arrable, *args: str):
     return newArrable
 
 def sort(fromTable: Arrable, *args: str): # args can also be None for base case, returning the table itself (recursion)
+    """
+    Order in reverse order so that the earlier columns have higher priority
+    """
     if not list(args):
         return fromTable
     orderedPreference = list(args)
-    colToOrderOn = orderedPreference[0]
-    del orderedPreference[0]
+    colToOrderOn = orderedPreference.pop()
     # print(colToOrderOn)
     sorted_table_rows = sorted(fromTable.get_rows(), key = lambda row: int(row[colToOrderOn]) if row[colToOrderOn].isnumeric() else row[colToOrderOn])
     # [print(row) for row in sorted_table_rows]

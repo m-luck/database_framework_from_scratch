@@ -40,6 +40,11 @@ class TestQueryCommands(unittest.TestCase):
         res = q.select(arr, "itemid,customerid", where="(itemid/7<3) and (customerid*2<5)")
         self.assertEqual([{'  ': 0, 'customerid': '2', 'itemid': '14'}], res.get_rows())
 
+    def test_select_math_asymm(self):
+        arr = Arrable().import_from_file("test_input1")
+        res = q.select(arr, "itemid,customerid", where="(itemid=14) and (customerid*2<5)")
+        self.assertEqual([{'  ': 0, 'customerid': '2', 'itemid': '14'}], res.get_rows())
+
     def test_groupby(self):
         arr = Arrable().import_from_file("test_input1")
         resList = q._groupby(arr, "customerid")
@@ -73,12 +78,12 @@ class TestQueryCommands(unittest.TestCase):
     def test_count(self):
         arr = Arrable().import_from_file("sales1")
         result = q.count(arr)
-        print(result)
+        # print(result)
 
     def test_countgroup(self):
         arr = Arrable().import_from_file("sales1")
         result = q.countgroup(arr, "time")
-        print(result.get_rows())
+        # print(result.get_rows())
 
     def test_concat(self):
         arr1 = Arrable().import_from_file("test_input1")
@@ -143,9 +148,17 @@ class TestQueryCommands(unittest.TestCase):
         res = p.interpret("join(R, S, R.customerid = S.C)")
         self.assertEqual(res, "join(obj_dict['R'], 'R', obj_dict['S'], 'S', ' R.customerid = S.C')")
 
-    def test_to_hash(self):
+    def test_interpret_to_hash(self):
         res = p.interpret("Hash(R,itemid)")
-        self.assertEqual(res, "to_hash(obj_dict['R'], 'itemid')")
+        self.assertEqual(res, ('R', "to_hash(obj_dict['R'], 'itemid')"))
+    
+    def test_output(self):
+        arr = Arrable().import_from_file("test_input1")
+        arr.output_to_file("test_out_file")
+
+    def test_intepret_sort(self):
+        res = p.interpret("sort(R, col1, col2, col3, col4)")
+        self.assertEqual(res, "sort(obj_dict['R'], 'col1', 'col2', 'col3', 'col4')")
 
 if __name__ == "__main__":
     unittest.main()

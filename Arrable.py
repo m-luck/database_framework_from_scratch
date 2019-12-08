@@ -91,10 +91,14 @@ class Arrable:
         return sliced_arrable
 
     def output_to_file(self, table_name):
-        with open(table_name, "w+") as toFile:
-            toFile.write('|'.join(self.get_col_names))
+        cols = self.get_col_names()
+        with open(table_name, "w") as toFile:
+            toFile.write('|'.join(self.get_col_names()))
             for row in self.get_rows():
-                toFile.write('|'.join(row.values()))
+                col_vals = []
+                for col in cols: 
+                    col_vals.append(row[col])
+                toFile.write('\n' + '|'.join(col_vals))
 
     def to_btree(self, table, ind):
         return Arrable(implem=BTreeImplementation, ind=ind).init_from_arrable(table.get_col_names(), table.get_rows())

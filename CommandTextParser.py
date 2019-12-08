@@ -76,3 +76,28 @@ def interpret(command: str):
         table1 = command.split("(")[1].split(",")[0].strip()
         table2 = command.split(",")[1].split(")")[0].strip()
         return f"concat(obj_dict['{table1}'], obj_dict['{table2}'])"
+    elif command.startswith("outputtofile"):
+        # outputtofile(T, T)
+        table = command.split("(")[1].split(",")[0]
+        file_name = command.split(")"[0].split(",")[1] 
+        return f"obj_dict['{table}'].output_to_file('{file_name}')"
+    elif command.startswith("sort"):
+        # sort(T1, S_C, col2, col3)
+        table = command.split("(")[1].split(",").strip()
+        nargs = command.split(")")[0].split(",")[1:]
+        nargs = [f"'{arg.strip()}'" for arg in nargs]
+        return f"sort(obj_dict['{table}'], {*nargs})"
+    elif command.startswith("movavg"):
+        args = command.split("(")[1].split(")")[0]
+        args = args.split(",")
+        table = args[0].strip()
+        col = args[1].strip()
+        slider = args[2].strip()
+        return f"movavg('{table}', '{}')"
+    elif command.startswith("movsum"):
+        args = command.split("(")[1].split(")")[0]
+        args = args.split(",")
+        table = args[0].strip()
+        col = args[1].strip()
+        slider = args[2].strip()
+        return f"movsum('{table}', '{}')"
