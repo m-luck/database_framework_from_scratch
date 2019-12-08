@@ -1,0 +1,11 @@
+elif command.startswith("outputtofile"):
+    # outputtofile(T, T)
+    table = command.split("(")[1].split(",")[0]
+    file_name = command.split(")"[0].split(",")[1] 
+    return f"outputtofile(obj_dict['{table}'], '{file_name}')"
+elif command.startswith("sort"):
+    # sort(T1, S_C, col2, col3)
+    table = command.split("(")[1].split(",").strip()
+    nargs = command.split(",")[1:].strip(")")
+    nargs = [f'{arg.strip()}' for arg in nargs]
+    return f"sort(obj_dict['{table}'], {*nargs})"

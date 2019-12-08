@@ -90,16 +90,14 @@ class Arrable:
         
         return sliced_arrable
 
-    def output_to_file(self):
-        # TODO: make columns match row cells (order row output according to col orders)
-        file_name = self.tableName + ".out" 
-        with open(self.tableName+".out", "w+") as toFile:
-            toFile.write(self.get_col_names)
+    def output_to_file(self, table_name):
+        with open(table_name, "w+") as toFile:
+            toFile.write('|'.join(self.get_col_names))
             for row in self.get_rows():
-                toFile.write(row.values())
+                toFile.write('|'.join(row.values()))
 
     def to_btree(self, table, ind):
-        return Arrable(implem=BTreeImplementation, pk=ind).init_from_arrable(table.get_col_names(), table.get_rows())
+        return Arrable(implem=BTreeImplementation, ind=ind).init_from_arrable(table.get_col_names(), table.get_rows())
     
     def to_hash(self, table, ind):
-        return Arrable(implem=HashStructureImplementation, pk=ind).init_from_arrable(table.get_col_names(), table.get_rows())
+        return Arrable(implem=HashStructureImplementation, ind=ind).init_from_arrable(table.get_col_names(), table.get_rows())
