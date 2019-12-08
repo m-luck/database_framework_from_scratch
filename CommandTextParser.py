@@ -86,7 +86,7 @@ def interpret(command: str):
         table = command.split("(")[1].split(",").strip()
         nargs = command.split(")")[0].split(",")[1:]
         nargs = [f"'{arg.strip()}'" for arg in nargs]
-        return f"sort(obj_dict['{table}'], {*nargs})"
+        return "sort(obj_dict['{table}'], '{}'".format(table=table, *nargs)
     elif command.startswith("movavg"):
         args = command.split("(")[1].split(")")[0]
         args = args.split(",")
