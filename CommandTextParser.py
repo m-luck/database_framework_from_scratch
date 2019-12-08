@@ -83,7 +83,7 @@ def interpret(command: str):
         return f"obj_dict['{table}'].output_to_file('{file_name}')"
     elif command.startswith("sort"):
         # sort(T1, S_C, col2, col3)
-        table = command.split("(")[1].split(",").strip()
+        table = command.split("(")[1].split(",")[0].strip()
         nargs = command.split(")")[0].split(",")[1:]
         nargs = [f"'{arg.strip()}'" for arg in nargs]
         return "sort(obj_dict['{table}'], '{}')".format(table=table, *nargs)
