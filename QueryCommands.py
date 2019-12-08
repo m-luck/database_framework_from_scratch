@@ -373,7 +373,7 @@ def sumgroup(table: Arrable, to_add: str, groupOn: list):
         new_all_groups = []
         for group in all_groups:
             new_group = _groupby(group, next_group_col)
-            new_all_groups.append(*new_group)
+            new_all_groups.extend(new_group)
         all_groups = new_all_groups
     list_of_sums = [0] * len(all_groups)
     
