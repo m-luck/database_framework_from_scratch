@@ -43,10 +43,10 @@ def interpret(command: str):
         return f"inputfromfile(\'{file_path}\')"
     elif command.startswith("project"):
         table = command.split("(")[1].split(",")[0].strip()
-        nargs = command.split(",")[1:].strip(")")
+        nargs = command.split(",")[1:]
         nargs[-1] = nargs[-1].strip(")")
         nargs = [f"'{arg.strip()}'" for arg in nargs]
-        return f"project(obj_dict['{table}'], {*nargs})"
+        return "project(obj_dict['{}'], '{}'".format(table, *nargs)
     elif command.startswith('sum'):
         table = command.split("(")[1].split(",")[0].strip()
         param = command.split(",")[1].split(")")[0].strip()
@@ -58,3 +58,21 @@ def interpret(command: str):
     elif command.startswith('count'):
         table = command.split("(")[1].split(",")[0].strip()
         return f"count(obj_dict['{table}'])"
+    elif command.startswith("sumgroup"):
+        table = command.split("(")[1].split(",")[0].strip()
+        param1 = command.split(',')[1]
+        param2 = command.split(',')[2].split(")")[0]
+        return f"sumgroup(obj_dict['{table}'], '{param1}', '{param2}')"
+    elif command.startswith("avggroup"):
+        table = command.split("(")[1].split(",")[0].strip()
+        param1 = command.split(',')[1]
+        param2 = command.split(',')[2].split(")")[0]
+        return f"avggroup(obj_dict['{table}'], '{param1}', '{param2}')"
+    elif command.startswith('countgroup'):
+        table = command.split("(")[1].split(",")[0].strip()
+        param = command.split(",")[1].split(")")[0].strip()
+        return f"countgroup(obj_dict['{table}'], '{param}')"
+    elif command.startswith("concat"):
+        table1 = command.split("(")[1].split(",")[0].strip()
+        table2 = command.split(",")[1].split(")")[0].strip()
+        return f"concat(obj_dict['{table1}'], obj_dict['{table2}'])"
