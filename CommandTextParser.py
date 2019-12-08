@@ -41,4 +41,20 @@ def interpret(command: str):
     elif command.startswith("inputfrom"):
         file_path = command.split("(")[1].strip(")")        
         return f"inputfromfile(\'{file_path}\')"
-    
+    elif command.startswith("project"):
+        table = command.split("(")[1].split(",")[0].strip()
+        nargs = command.split(",")[1:].strip(")")
+        nargs[-1] = nargs[-1].strip(")")
+        nargs = [f"'{arg.strip()}'" for arg in nargs]
+        return f"project(obj_dict['{table}'], {*nargs})"
+    elif command.startswith('sum'):
+        table = command.split("(")[1].split(",")[0].strip()
+        param = command.split(",")[1].split(")")[0].strip()
+        return f"sum(obj_dict['{table}'], '{param}')"
+    elif command.startswith('avg'):
+        table = command.split("(")[1].split(",")[0].strip()
+        param = command.split(",")[1].split(")")[0].strip()
+        return f"avg(obj_dict['{table}'], '{param}')"
+    elif command.startswith('count'):
+        table = command.split("(")[1].split(",")[0].strip()
+        return f"count(obj_dict['{table}'])"
