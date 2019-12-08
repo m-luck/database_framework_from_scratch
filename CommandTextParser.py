@@ -34,7 +34,7 @@ def interpret(command: str):
         table = command.split("(")[1].split(",")[0]
         ind = command.split(")")[0].split(",")[1]
         return (table, f"to_hash(obj_dict['{table}'], '{ind}')")
-    elif command.startswith("BTree"):
+    elif command.startswith("Btree"):
         table = command.split("(")[1].split(",")[0]
         ind = command.split(")")[0].split(",")[1]
         return (table, f"to_btree(obj_dict['{table}'], '{ind}')")
