@@ -177,7 +177,7 @@ def join(tableA: Arrable, A_name: str, tableB: Arrable, B_name: str, where: str)
     for Arow in renamed_cols_tableA.get_rows():
         intermediate_cartesian = []
         # print(prog/done)
-        progress_bar.update((prog/done))
+        progress_bar.update((prog/done)*100)
         for Brow in renamed_cols_tableB.get_rows():
             joined_row = {**Arow, **Brow}
             intermediate_cartesian.append(joined_row)
