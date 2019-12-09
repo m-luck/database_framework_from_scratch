@@ -1,4 +1,4 @@
-R := inputfromfile(sales1) // import vertical bar delimited foo, first line
+R := inputfromfile(sales2) // import vertical bar delimited foo, first line
 // has column headers.
 // Suppose they are saleid|itemid|customerid|storeid|time|qty|pricerange
 // In general there can be more or fewer columns than this.
@@ -13,7 +13,7 @@ R5 := sumgroup(R1, qty, time, pricerange) // select sum(qty), time,
 R6 := avggroup(R1, qty, pricerange) // select avg(qty), pricerange
 // from R1 group by by pricerange
 R7 := countgroup(R1, time, qty)
-S := inputfromfile(sales2) // suppose column headers are
+S := inputfromfile(sales1) // suppose column headers are
 // saleid|I|C|S|T|Q|P
 T := join(R, S, R.customerid = S.customerid) // select * from R, S
 // where R.customerid = S.C
