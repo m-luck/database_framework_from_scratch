@@ -389,7 +389,8 @@ def sumgroup(table: Arrable, to_add: str, groupOn: list):
         arrable_rows.append(group[0])
     
     final_arrable = Arrable().init_from_arrable(final_columns, arrable_rows)
-    result = project(final_arrable, group_col_name, groupOn)
+    groupOn.append("sumgroup")
+    result = project(final_arrable, groupOn)
     
     return result
 
