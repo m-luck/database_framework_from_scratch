@@ -256,7 +256,7 @@ def _groupby(fromTable: Arrable, groupOn: str):
     """
 
     res = defaultdict(list)
-    
+    groupOn = groupOn.strip()
     for row in fromTable.get_rows():
         res[row[groupOn]].append(row)
     
@@ -363,6 +363,7 @@ def sumgroup(table: Arrable, to_add: str, groupOn: list):
     groups 'Arrable' by 'groupOn' and compute the sum of column 'to_add' for each group
     returns arrable with two columns, 'groupOn' and new 'sumgroup' columns
     """
+    orig_groupOn = groupOn.copy()
     group_col_name = "sumgroup"
     final_columns = table.get_col_names().append(group_col_name)
     all_groups = [table]
@@ -378,36 +379,44 @@ def sumgroup(table: Arrable, to_add: str, groupOn: list):
     
     # generate list of sums, one for each group
     for index, group in enumerate(all_groups):
-        for row in group:
+        for row in group.get_rows():
             list_of_sums[index] += int(row[to_add])
     
     # append sumgroup as new column and then append row to new final arrable
     arrable_rows = []
     for i, group in enumerate(all_groups):
-        group[0].update({group_col_name:str(list_of_sums[i])})
-        arrable_rows.append(group[0])
+        group.get_rows()[0].update({group_col_name:str(list_of_sums[i])})
+        arrable_rows.append(group.get_rows()[0])
     
     final_arrable = Arrable().init_from_arrable(final_columns, arrable_rows)
-    groupOn.append("sumgroup")
-    result = project(final_arrable, groupOn)
-    
+    orig_groupOn.append("sumgroup")
+    result = project(final_arrable, orig_groupOn)
     return result
 
 
-def avggroup(table: Arrable, to_avg: str, groupOn: str):
+def avggroup(table: Arrable, to_avg: str, groupOn: list):
     """
     groups 'Arrable' by 'groupOn' and compute the avg of column 'to_avg' for each group
     returns arrable with two columns, 'groupOn' and new 'avggroup' columns
     """
+    orig_groupOn = groupOn.copy()
     group_col_name = "avggroup"
     final_columns = table.get_col_names().append(group_col_name)
-    all_groups = _groupby(table, groupOn)
+    all_groups = [table]
+    while groupOn:
+        next_group_col = groupOn.pop()
+        print("nextgroup call = ", next_group_col)
+        new_all_groups = []
+        for group in all_groups:
+            new_group = _groupby(group, next_group_col)
+            new_all_groups.extend(new_group)
+        all_groups = new_all_groups
     list_of_avgs = [0] * len(all_groups)
     
     # generate list of avgs, one for each group
     row_count = 0
     for i, group in enumerate(all_groups):
-        for row in group:
+        for row in group.get_rows():
             list_of_avgs[i] += int(row[to_avg])
             row_count += 1
         list_of_avgs[i] = list_of_avgs[i]/row_count
@@ -416,33 +425,48 @@ def avggroup(table: Arrable, to_avg: str, groupOn: str):
     # append avggroup as new column and then append row to new final arrable
     arrable_rows = []
     for i, group in enumerate(all_groups):
-        group[0].update({group_col_name:str(list_of_avgs[i])})
-        arrable_rows.append(group[0])
+        group.get_rows()[0].update({group_col_name:str(list_of_avgs[i])})
+        arrable_rows.append(group.get_rows()[0])
     
     final_arrable = Arrable().init_from_arrable(final_columns, arrable_rows)
-    result = project(final_arrable, group_col_name, groupOn)
+    orig_groupOn.append("avggroup")
+    result = project(final_arrable, orig_groupOn)
     
     return result
 
-def countgroup(table: Arrable, groupOn: str):
+def countgroup(table: Arrable, groupOn: list):
     """
     groups 'Arrable' by 'groupOn' and counts the number of rows containing a value for 'to_count' in each group
     returns arrable with two columns, 'groupOn' and new 'countgroup' columns
     """
-    all_groups = _groupby(table, groupOn)
+    # all_groups = _groupby(table, groupOn)
+    orig_groupOn = groupOn.copy()
+    group_col_name = "countgroup"
+    final_columns = table.get_col_names().append(group_col_name)
+    all_groups = [table]
+    while groupOn:
+        next_group_col = groupOn.pop()
+        print("nextgroup call = ", next_group_col)
+        new_all_groups = []
+        for group in all_groups:
+            new_group = _groupby(group, next_group_col)
+            new_all_groups.extend(new_group)
+        all_groups = new_all_groups
+
     list_of_counts = []
     for group in all_groups:
-        list_of_counts.append(len(group))
+        list_of_counts.append(len(group.get_rows()))
      
     arrable_rows = []
     group_col_name = "countgroup"
     final_columns = table.get_col_names().append(group_col_name)
     for i, group in enumerate(all_groups):
-        group[0].update({group_col_name:str(list_of_counts[i])})
-        arrable_rows.append(group[0])
+        group.get_rows()[0].update({group_col_name:str(list_of_counts[i])})
+        arrable_rows.append(group.get_rows()[0])
     
     final_arrable = Arrable().init_from_arrable(final_columns, arrable_rows)
-    result = project(final_arrable, group_col_name, groupOn)
+    orig_groupOn.append("countgroup")
+    result = project(final_arrable, orig_groupOn)
     
     return result
 

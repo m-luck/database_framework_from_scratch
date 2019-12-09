@@ -57,13 +57,18 @@ def interpret(command: str):
         return "q.sumgroup(obj_dict['{}'], '{}', {})".format(table, param2, nargs)
     elif command.startswith("avggroup"):
         table = command.split("(")[1].split(",")[0].strip()
-        param1 = command.split(',')[1]
-        param2 = command.split(',')[2].split(")")[0]
-        return f"q.avggroup(obj_dict['{table}'], '{param1}', '{param2}')"
+        nargs = command.split(",")[1:]
+        nargs[-1] = nargs[-1].strip(")")
+        nargs = [f'{arg.strip()}' for arg in nargs]
+        param2 = nargs[0]
+        nargs = nargs[1:]
+        return "q.avggroup(obj_dict['{}'], '{}', {})".format(table, param2, nargs)
     elif command.startswith('countgroup'):
         table = command.split("(")[1].split(",")[0].strip()
-        param = command.split(",")[1].split(")")[0].strip()
-        return f"q.countgroup(obj_dict['{table}'], '{param}')"
+        nargs = command.split(",")[1:]
+        nargs[-1] = nargs[-1].strip(")")
+        nargs = [f'{arg.strip()}' for arg in nargs]
+        return "q.countgroup(obj_dict['{}'], {})".format(table, nargs)
     elif command.startswith('sum'):
         table = command.split("(")[1].split(",")[0].strip()
         param = command.split(",")[1].split(")")[0].strip()

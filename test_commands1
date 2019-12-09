@@ -12,6 +12,7 @@ R5 := sumgroup(R1, qty, time, pricerange) // select sum(qty), time,
 // pricerange from R1 group by time, pricerange
 R6 := avggroup(R1, qty, pricerange) // select avg(qty), pricerange
 // from R1 group by by pricerange
+R7 := countgroup(R1, time, qty)
 S := inputfromfile(input_slice) // suppose column headers are
 // saleid|I|C|S|T|Q|P
 T := join(R, S, R.customerid = S.customerid) // select * from R, S
@@ -42,6 +43,8 @@ outputtofile(R2, R2)
 outputtofile(R3, R3)
 outputtofile(R4, R4)
 outputtofile(R5, R5)
+outputtofile(R6, R6)
+outputtofile(R7, R7)
 outputtofile(T1, T1)
 outputtofile(T2, T2)
 outputtofile(T2prime, T2prime)
